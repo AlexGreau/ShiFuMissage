@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name" translatable="false">ImplicitIntents</string>
+    <string name="enter_location">Enter content</string>
+    <string name="show_map">Show the map</string>
+    <string name="open_browser">Open Browser</string>
+    <string name="send_sms">Send SMS</string>
+    <string name="download">Download</string>
+    <string name="open_sms">Open SMS</string>
+</resources>

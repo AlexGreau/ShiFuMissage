@@ -1,0 +1,7 @@
+<resources>
+    <string name="enter_location" translatable="false">Saisir le contenu (address, url, sms body)</string>
+    <string name="show_map" translatable="false">Carte</string>
+    <string name="open_browser">Navigue</string>
+    <string name="send_sms">SMS</string>
+    <string name="download">Télécharge</string>
+</resources>
