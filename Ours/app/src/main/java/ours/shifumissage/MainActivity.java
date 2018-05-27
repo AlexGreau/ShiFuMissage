@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 smsButtonClicked();
             }
         });
-
+        
     }
 
     private void smsButtonClicked() {
