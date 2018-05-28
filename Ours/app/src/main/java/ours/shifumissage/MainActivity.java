@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
         try {
             int key = ThreadLocalRandom.current().nextInt(0, 27);
-            encMessManager.encryptMessage(content, key);
+            content = encMessManager.encryptMessage(content, key);
             encMessManager.insertPhoneKey(phone_number, key);
             smsManager.sendTextMessage(phone_number, null, "key=" + content, sentPI, deliveredPI);
             phone_number = "";
