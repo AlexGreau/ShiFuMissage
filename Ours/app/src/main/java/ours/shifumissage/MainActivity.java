@@ -1,6 +1,8 @@
 package ours.shifumissage;
 
+import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -24,7 +26,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ShiFuMissage";
-
+    private static SmsManager smsManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +58,15 @@ public class MainActivity extends AppCompatActivity {
                 smsButtonClicked();
             }
         });
-        
+
+        smsManager = SmsManager.getDefault();
     }
 
     private void smsButtonClicked() {
         if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
                 (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[] { SEND_SMS, READ_CONTACTS },
+                    new String[]{SEND_SMS, READ_CONTACTS},
                     REQUEST_SEND_SMS);
         } else {
             pickContact();
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 ContentResolver cr = getContentResolver();
                 Uri dataUri = data.getData();
-                String[] projection = { ContactsContract.Contacts._ID };
+                String[] projection = {ContactsContract.Contacts._ID};
                 Cursor cursor = cr.query(dataUri, projection, null, null, null);
 
                 if (null != cursor && cursor.moveToFirst()) {
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        switch(requestCode) {
+        switch (requestCode) {
             case REQUEST_SEND_SMS:
                 pickContact();
                 break;
@@ -135,6 +138,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendSMS(String content, String number) {
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(number, null, content, null, null);
+        try {
+            smsManager.sendTextMessage(number, null, content, null, null);
+            Toast.makeText(getApplicationContext(), "SMS sent.",
+                    Toast.LENGTH_LONG).show();
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getApplicationContext(),"SMS failed, please try again.",
+                    Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 }
+
