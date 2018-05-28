@@ -15,6 +15,8 @@ public class Crypthor {
     public String cryptCesar(String msg, int key){
         int letter;
         int offset = minOffset; // minuscules
+        msg.toLowerCase();
+
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < msg.length(); i ++){
             letter = (int) msg.charAt(i) - offset;
@@ -27,6 +29,8 @@ public class Crypthor {
     public String decryptCesar(String msg, int key){
         int letter;
         int offset = minOffset;
+        msg.toLowerCase();
+
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < msg.length(); i ++){
             letter = (int) msg.charAt(i) - offset;
@@ -36,7 +40,7 @@ public class Crypthor {
         return res.toString();
     }
 
-    private int genCesarKey(){
+    public int genCesarKey(){
         // new standard way to gen randint
         int randomNum = ThreadLocalRandom.current().nextInt(0, 25 + 1);
         return randomNum;
