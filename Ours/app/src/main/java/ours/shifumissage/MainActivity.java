@@ -313,11 +313,13 @@ public class MainActivity extends AppCompatActivity {
 
         SmsManager smsManager = SmsManager.getDefault();
         try {
-            smsManager.sendTextMessage(phone_number, null, "key=" + content, sentPI, deliveredPI);
-            encMessManager.deletePhoneKey(phone_number);
-            phone_number = "";
-            numberSelected.setText("No number selected");
-            initializeAdapter();
+            if (!content.equals("-1")){
+                smsManager.sendTextMessage(phone_number, null, "key=" + content, sentPI, deliveredPI);
+                encMessManager.deletePhoneKey(phone_number);
+                phone_number = "";
+                numberSelected.setText("No number selected");
+                initializeAdapter();
+            }
         }
         catch (Exception e)
         {
