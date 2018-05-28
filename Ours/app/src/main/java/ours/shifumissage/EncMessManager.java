@@ -57,21 +57,6 @@ public class EncMessManager {
         }.start();
     }
 
-    public EncMessage getEncMessage(String messageId_) {
-        final String messageId = messageId_;
-        final EncMessage message = new EncMessage("", "");
-        new Thread() {
-            @Override
-            public void run() {
-                EncMessage encMessage = messageDatabase.dbAccess().getEncMessage(messageId);
-                message.setMessage(encMessage.getMessage());
-                message.setMessageId(encMessage.getMessageId());
-                message.setNumber(encMessage.getNumber());
-            }
-        }.start();
-        return message;
-    }
-
     public EncMessage getEncMessageFromNumber(String number_) {
         final String number = number_;
         final EncMessage message = new EncMessage("", number);
@@ -79,9 +64,11 @@ public class EncMessManager {
             @Override
             public void run() {
                 EncMessage encMessage = messageDatabase.dbAccess().getMessageFromNumber(number);
-                message.setMessage(encMessage.getMessage());
-                message.setMessageId(encMessage.getMessageId());
-                message.setNumber(encMessage.getNumber());
+                if (encMessage != null) {
+                    message.setMessage(encMessage.getMessage());
+                    message.setMessageId(encMessage.getMessageId());
+                    message.setNumber(encMessage.getNumber());
+                }
             }
         }.start();
         return message;
