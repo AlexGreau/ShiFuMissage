@@ -222,6 +222,10 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_SEND_SMS:
                 pickContact();
                 break;
+            case REQUEST_RECEIVE_SMS:
+                IntentFilter intentFilter = new IntentFilter(RECEIVE_SMS);
+                getApplicationContext().registerReceiver(smsReceiver, intentFilter);
+                break;
             default:
                 Toast.makeText(getApplicationContext(), "WRONG REQUEST CODE in Permissions", Toast.LENGTH_SHORT).show();
         }
