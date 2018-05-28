@@ -31,6 +31,7 @@ import android.widget.Toast;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_SMS;
 import static android.Manifest.permission.RECEIVE_SMS;
 import static android.Manifest.permission.SEND_SMS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -152,12 +153,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void askForReceptionPermission(){
-        if (ContextCompat.checkSelfPermission(MainActivity.this, RECEIVE_SMS) != PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, READ_SMS) != PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{RECEIVE_SMS},
+                    new String[]{READ_SMS},
                     REQUEST_RECEIVE_SMS);
         } else {
-            IntentFilter intentFilter = new IntentFilter(RECEIVE_SMS);
+            IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
             getApplicationContext().registerReceiver(smsReceiver, intentFilter);
         }
     }
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 pickContact();
                 break;
             case REQUEST_RECEIVE_SMS:
-                IntentFilter intentFilter = new IntentFilter(RECEIVE_SMS);
+                IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
                 getApplicationContext().registerReceiver(smsReceiver, intentFilter);
                 break;
             default:
