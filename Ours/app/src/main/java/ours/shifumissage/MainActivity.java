@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                         String intitule = message.split("=")[0];
                         String cont = message.split("=")[1];
 
+                        
 
                         if ((intitule.compareTo("message") == 0)){
                             EncMessage encMessage = new EncMessage(cont, phone);
@@ -288,14 +289,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-    // TODO : Cryptage Message
-    // TODO : sauver clé / message
-    // Todo : detecter reponse pour pouvoir envoyer clé
-
 }
 
