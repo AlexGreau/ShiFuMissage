@@ -10,6 +10,9 @@ import java.util.List;
 
 @Dao
 public interface DBAccess {
+
+    /*Interface for interactions with the database*/
+
     @Insert
     void insertUniqueMessage(EncMessage message);
     @Insert

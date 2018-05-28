@@ -135,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         askForReceptionPermission();
     }
 
+
+    /*(Re) Initialize the list containing all phone numbers associated with sent ciphered sms*/
     private void initializeAdapter(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_2, android.R.id.text1, encMessManager.getPhoneList());
 
@@ -152,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    /*Ask for sms reception permission if not already granted*/
     private void askForReceptionPermission(){
         if (ContextCompat.checkSelfPermission(MainActivity.this, READ_SMS) != PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
@@ -163,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /*Ask for sending sms permission if not already granted*/
     private void smsButtonClicked() {
         if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
                 (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
@@ -174,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /*Ask for sending ssms permission if not already granted*/
     private void keyButtonClicked(){
         if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
                 (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
@@ -185,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /*Method launched once a contact is selected through the contact activity*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_CONTACT_REQUEST) {
@@ -212,6 +222,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    /*Action to make once the request permission is allowed/denied by user*/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
@@ -236,12 +248,16 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_CONTACT_REQUEST = 20;
     private static final int REQUEST_RECEIVE_SMS = 30;
 
+
+    /*Launch activity to select a contact*/
     private void pickContact() {
         Intent i = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(i, PICK_CONTACT_REQUEST);
     }
 
+
+    /*Get the selected contact's Phone number*/
     private String getPhoneNumber(String id) {
         ContentResolver cr = getContentResolver();
         String where = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id;
@@ -253,6 +269,8 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
+
+    /*Send SMS to selected contact*/
     private void sendSMS(String content_, String number) {
         final String content = content_;
         String SENT = "SMS_SENT";
@@ -279,8 +297,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /*Send the key used to cipher the message sent to selected number*/
     private void sendKey() {
-        String content = "" +encMessManager.getKeyFromPhone(phone_number);
+        int keyFromPhone = encMessManager.getKeyFromPhone(phone_number);
+        if (keyFromPhone == -1) return;
+        String content = "" +keyFromPhone;
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
