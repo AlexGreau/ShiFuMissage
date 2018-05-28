@@ -16,6 +16,8 @@ public interface DBAccess {
     void insertMultipleMessages(List<EncMessage> messageList);
     @Query("SELECT * FROM EncMessage WHERE messageId = :messageId")
     EncMessage getEncMessage(String messageId);
+    @Query("SELECT * FROM EncMessage WHERE number = :number")
+    EncMessage getMessageFromNumber(String number);
     @Update
     void updateMessage(EncMessage message);
     @Delete

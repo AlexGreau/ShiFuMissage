@@ -1,7 +1,9 @@
 package ours.shifumissage;
 
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,12 +15,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import java.util.concurrent.ThreadLocalRandom;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.SEND_SMS;
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ShiFuMissage";
     private static SmsManager smsManager;
     private static EncMessManager encMessManager;
+    private BroadcastReceiver smsReceiver;
 
 
     @Override
@@ -65,6 +71,38 @@ public class MainActivity extends AppCompatActivity {
         smsManager = SmsManager.getDefault();
 
         encMessManager = new EncMessManager(getApplicationContext());
+
+        smsReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle intentExtras = intent.getExtras();
+
+                if (intentExtras != null) {
+                    /* Get Messages */
+                    Object[] sms = (Object[]) intentExtras.get("pdus");
+
+                    for (int i = 0; i < sms.length; ++i) {
+                        /* Parse Each Message */
+                        SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
+
+                        String phone = smsMessage.getOriginatingAddress();
+                        String message = smsMessage.getMessageBody().toString();
+
+                        String intitule = message.split("=")[0];
+                        String cont = message.split("=")[1];
+
+
+                        if ((intitule.compareTo("message") == 0)){
+                            EncMessage encMessage = new EncMessage(cont, phone);
+                            encMessManager.storeEncMessage(encMessage);
+                        } else if (intitule.compareTo("key") == 0){
+                            EncMessage encMessage = encMessManager.getEncMessageFromNumber(phone);
+                            Toast.makeText(context, phone + ": " + encMessManager.decryptMessage(encMessage.getMessage(), Integer.parseInt(cont)), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        };
     }
 
     private void smsButtonClicked() {
@@ -153,8 +191,10 @@ public class MainActivity extends AppCompatActivity {
 
         SmsManager smsManager = SmsManager.getDefault();
         try {
-            smsManager.sendTextMessage(number, null, content, sentPI, deliveredPI);
-            encMessManager.encAndSave(content);
+            int key = ThreadLocalRandom.current().nextInt(0, 27);
+            encMessManager.encryptMessage(content, key);
+            encMessManager.insertPhoneKey(number, key);
+            smsManager.sendTextMessage(number, null, "message=" + content, sentPI, deliveredPI);
         }
         catch (Exception e)
         {

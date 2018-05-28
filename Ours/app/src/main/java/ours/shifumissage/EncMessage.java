@@ -12,13 +12,14 @@ public class EncMessage {
     @NonNull
     @PrimaryKey
     private String messageId;
+    @NonNull
+    private String number;
     private String message;
-    private int encKey;
 
-    public EncMessage(String message, int encKey){
+    public EncMessage(String message, String number){
         this.messageId = UUID.randomUUID().toString();
         this.message = message;
-        this.encKey = encKey;
+        this.number = number;
     }
 
     @NonNull
@@ -38,11 +39,11 @@ public class EncMessage {
         this.message = message;
     }
 
-    public int getEncKey() {
-        return encKey;
+    public String getNumber() {
+        return number;
     }
 
-    public void setEncKey(int encKey) {
-        this.encKey = encKey;
+    public void setNumber(String number) {
+        this.number = number;
     }
 }
