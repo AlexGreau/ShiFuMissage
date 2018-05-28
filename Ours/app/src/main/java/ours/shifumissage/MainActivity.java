@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.SEND_SMS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -27,8 +29,8 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ShiFuMissage";
     private static SmsManager smsManager;
-    private static final String DATABASE_NAME = "messages_db";
-    private MessageDatabase messageDatabase;
+    private static EncMessManager encMessManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         smsManager = SmsManager.getDefault();
 
-        messageDatabase = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class, DATABASE_NAME)
-                .fallbackToDestructiveMigration()
-                .build();
+        encMessManager = new EncMessManager(getApplicationContext());
     }
 
     private void smsButtonClicked() {
@@ -143,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void sendSMS(String content, String number) {
+    private void sendSMS(String content_, String number) {
+        final String content = content_;
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
         try {
             smsManager.sendTextMessage(number, null, content, sentPI, deliveredPI);
+            encMessManager.encAndSave(content);
         }
         catch (Exception e)
         {
