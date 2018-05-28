@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.RECEIVE_SMS;
 import static android.Manifest.permission.SEND_SMS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -126,6 +128,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+
+        IntentFilter intentFilter = new IntentFilter(RECEIVE_SMS);
+        intentFilter.setPriority(9999);
+        getApplicationContext().registerReceiver(smsReceiver, intentFilter);
     }
 
     private void initializeAdapter(){
