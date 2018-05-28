@@ -3,7 +3,11 @@ package ours.shifumissage;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -13,6 +17,14 @@ public class EncMessManager {
     private Crypthor crypthor;
     private Context appContext;
     private HashMap<String, Integer> phone_key = new HashMap<>();
+    private ArrayList<String> phoneList = new ArrayList<>();
+
+
+
+    public String[] getPhoneList() {
+        return phoneList.toArray(new String[phoneList.size()]);
+    }
+
 
 
     public EncMessManager(Context appContext) {
@@ -74,6 +86,7 @@ public class EncMessManager {
 
     public void insertPhoneKey(String phone, int key) {
         phone_key.put(phone, key);
+        phoneList.add(phone);
     }
 
     public int getKeyFromPhone(String phone) {
@@ -83,4 +96,5 @@ public class EncMessManager {
             return -1;
         }
     }
+
 }

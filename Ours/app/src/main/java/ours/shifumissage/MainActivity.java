@@ -18,8 +18,12 @@ import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -34,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private static SmsManager smsManager;
     private static EncMessManager encMessManager;
     private BroadcastReceiver smsReceiver;
+    private ListView listSms;
+    private String phone_number;
+    private TextView numberSelected;
 
 
     @Override
@@ -43,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText textInput = (EditText) findViewById(R.id.textInput);
 
-        final Button openSmsButton = (Button) findViewById(R.id.openSmsButton);
+        /*final Button openSmsButton = (Button) findViewById(R.id.openSmsButton);
         openSmsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "INTENT NOT RESOLVED", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
         final Button smsButton = (Button) findViewById(R.id.sendButton);
         smsButton.setOnClickListener(new Button.OnClickListener() {
@@ -68,9 +75,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        smsManager = SmsManager.getDefault();
+        final Button keyButton = (Button) findViewById(R.id.keyButton);
+        keyButton.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                keyButtonClicked();
+            }
+        });
 
         encMessManager = new EncMessManager(getApplicationContext());
+
+        listSms = (ListView) findViewById(R.id.listSms);
+
+        smsManager = SmsManager.getDefault();
+
+        numberSelected = (TextView) findViewById(R.id.numberSelected);
+
 
         smsReceiver = new BroadcastReceiver() {
             @Override
@@ -84,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < sms.length; ++i) {
                         /* Parse Each Message */
                         SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
+                        String action = intent.getAction();
 
                         String phone = smsMessage.getOriginatingAddress();
                         String message = smsMessage.getMessageBody().toString();
@@ -105,6 +127,23 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private void initializeAdapter(){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_2, android.R.id.text1, encMessManager.getPhoneList());
+
+        listSms.setAdapter(adapter);
+
+        listSms.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                phone_number = encMessManager.getPhoneList()[position];
+                numberSelected.setText(phone_number);
+            }
+        });
+    }
+
     private void smsButtonClicked() {
         if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
                 (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
@@ -113,6 +152,17 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_SEND_SMS);
         } else {
             pickContact();
+        }
+    }
+
+    private void keyButtonClicked(){
+        if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
+                (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{SEND_SMS, READ_CONTACTS},
+                    REQUEST_SEND_SMS);
+        } else {
+            sendKey();
         }
     }
 
@@ -194,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
             int key = ThreadLocalRandom.current().nextInt(0, 27);
             encMessManager.encryptMessage(content, key);
             encMessManager.insertPhoneKey(number, key);
+            initializeAdapter();
             smsManager.sendTextMessage(number, null, "message=" + content, sentPI, deliveredPI);
         }
         catch (Exception e)
@@ -203,6 +254,35 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void sendKey() {
+        String content = "" +encMessManager.getKeyFromPhone(phone_number);
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
+                SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
+        SmsManager smsManager = SmsManager.getDefault();
+        try {
+            int key = ThreadLocalRandom.current().nextInt(0, 27);
+            encMessManager.encryptMessage(content, key);
+            encMessManager.insertPhoneKey(phone_number, key);
+            smsManager.sendTextMessage(phone_number, null, "key=" + content, sentPI, deliveredPI);
+            phone_number = "";
+            numberSelected.setText("No number selected");
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getApplicationContext(),"SMS failed, please try again.",
+                    Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+
 
 
 

@@ -16,23 +16,49 @@
             android:id="@+id/textInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/sendButton"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-58dp"
+            android:layout_marginStart="15dp"
             android:contentDescription="Please enter Message text here"
-            android:maxLines="5"
-            />
+            android:maxLines="5" />
 
         <Button
             android:id="@+id/sendButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send sms"
-            android:layout_below="@+id/textInput"
-            android:layout_centerHorizontal="true"
-            />
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="58dp"
+            android:text="Send sms" />
+
+        <ListView
+            android:id="@+id/listSms"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_centerVertical="true"
+            android:scrollbars="vertical" />
 
         <Button
+            android:id="@+id/keyButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
+            android:text="Send key" />
+
+        <TextView
+            android:id="@+id/numberSelected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="114dp"
+            android:text="No number selected"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <!--<Button
             android:id="@+id/openSmsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,6 +66,7 @@
             android:text="open sms App"
             android:layout_centerHorizontal="true"
             />
+            -->
 
     </RelativeLayout>
 
