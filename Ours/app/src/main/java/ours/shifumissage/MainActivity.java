@@ -131,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
-        IntentFilter intentFilter = new IntentFilter(RECEIVE_SMS);
-        getApplicationContext().registerReceiver(smsReceiver, intentFilter);
+        askForReceptionPermission();
     }
 
     private void initializeAdapter(){
@@ -150,6 +149,17 @@ public class MainActivity extends AppCompatActivity {
                 numberSelected.setText(phone_number);
             }
         });
+    }
+
+    private void askForReceptionPermission(){
+        if (ContextCompat.checkSelfPermission(MainActivity.this, RECEIVE_SMS) != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{RECEIVE_SMS},
+                    REQUEST_RECEIVE_SMS);
+        } else {
+            IntentFilter intentFilter = new IntentFilter(RECEIVE_SMS);
+            getApplicationContext().registerReceiver(smsReceiver, intentFilter);
+        }
     }
 
     private void smsButtonClicked() {
@@ -219,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_SEND_SMS = 10;
     private static final int PICK_CONTACT_REQUEST = 20;
+    private static final int REQUEST_RECEIVE_SMS = 30;
 
     private void pickContact() {
         Intent i = new Intent(Intent.ACTION_PICK,
