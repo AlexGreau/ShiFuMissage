@@ -20,15 +20,29 @@ public class EncMessManager {
         crypthor = new Crypthor();
     }
 
-    public void encAndSave(String message_){
+    public String encAndSave(String message_){
         final String message = message_;
+        int key = ThreadLocalRandom.current().nextInt(0, 27);
+        final EncMessage encMessage = new EncMessage(crypthor.cryptCesar(message, key), key);
         new Thread(){
             @Override
             public void run(){
-                int key = ThreadLocalRandom.current().nextInt(0, 27);
-                EncMessage encMessage = new EncMessage(crypthor.cryptCesar(message, key), key);
                 messageDatabase.dbAccess().insertUniqueMessage(encMessage);
             }
         }.start();
+        return encMessage.getMessageId();
+    }
+
+    public String getAndDecrypt(final String messageId_){
+        final String messageId = messageId_;
+        final EncMessage message = new EncMessage("", 0);
+        new Thread(){
+            @Override
+            public void run(){
+                EncMessage encMessage = messageDatabase.dbAccess().getEncMessage(messageId);
+                message.setMessage(crypthor.decryptCesar(encMessage.getMessage(), encMessage.getEncKey()));
+            }
+        }.start();
+        return message.getMessage();
     }
 }

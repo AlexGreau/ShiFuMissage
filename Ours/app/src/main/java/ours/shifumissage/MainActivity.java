@@ -1,7 +1,6 @@
 package ours.shifumissage;
 
 import android.app.PendingIntent;
-import android.arch.persistence.room.Room;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.concurrent.ThreadLocalRandom;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.SEND_SMS;
