@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         IntentFilter intentFilter = new IntentFilter(RECEIVE_SMS);
-        intentFilter.setPriority(9999);
         getApplicationContext().registerReceiver(smsReceiver, intentFilter);
     }
 
