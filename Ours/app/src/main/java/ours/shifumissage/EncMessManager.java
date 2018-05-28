@@ -97,4 +97,10 @@ public class EncMessManager {
         }
     }
 
+    public void deletePhoneKey(String phone){
+        if (phone_key.containsKey(phone)) {
+            phone_key.remove(phone);
+        }
+    }
+
 }

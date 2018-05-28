@@ -271,8 +271,10 @@ public class MainActivity extends AppCompatActivity {
             content = encMessManager.encryptMessage(content, key);
             encMessManager.insertPhoneKey(phone_number, key);
             smsManager.sendTextMessage(phone_number, null, "key=" + content, sentPI, deliveredPI);
+            encMessManager.deletePhoneKey(phone_number);
             phone_number = "";
             numberSelected.setText("No number selected");
+            initializeAdapter();
         }
         catch (Exception e)
         {
