@@ -1,8 +1,7 @@
 package ours.shifumissage;
 
-import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -137,11 +136,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendSMS(String content, String number) {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
+                SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
         SmsManager smsManager = SmsManager.getDefault();
         try {
-            smsManager.sendTextMessage(number, null, content, null, null);
-            Toast.makeText(getApplicationContext(), "SMS sent.",
-                    Toast.LENGTH_LONG).show();
+            smsManager.sendTextMessage(number, null, content, sentPI, deliveredPI);
         }
         catch (Exception e)
         {
@@ -150,5 +155,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
+
+    // TODO : Cryptage Message
+    // TODO : sauver clé / message
+    // Todo : detecter reponse pour pouvoir envoyer clé
+
 }
 
