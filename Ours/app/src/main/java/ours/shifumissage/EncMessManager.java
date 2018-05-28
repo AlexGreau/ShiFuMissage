@@ -46,6 +46,17 @@ public class EncMessManager {
         }.start();
     }
 
+    public void deleteEncMessage(EncMessage encMessage_) {
+        final EncMessage encMessage = new EncMessage(encMessage_.getMessage(), encMessage_.getNumber());
+        encMessage.setMessageId(encMessage_.getMessageId());
+        new Thread(){
+            @Override
+            public void run(){
+                messageDatabase.dbAccess().deleteMessage(encMessage);
+            }
+        }.start();
+    }
+
     public EncMessage getEncMessage(String messageId_) {
         final String messageId = messageId_;
         final EncMessage message = new EncMessage("", "");

@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if (intitule.compareTo("key") == 0){
                             EncMessage encMessage = encMessManager.getEncMessageFromNumber(phone);
                             Toast.makeText(context, phone + ": " + encMessManager.decryptMessage(encMessage.getMessage(), Integer.parseInt(cont)), Toast.LENGTH_SHORT).show();
+                            encMessManager.deleteEncMessage(encMessage);
                         }
                     }
                 }
