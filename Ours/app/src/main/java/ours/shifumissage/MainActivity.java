@@ -1,6 +1,7 @@
 package ours.shifumissage;
 
 import android.app.PendingIntent;
+import android.arch.persistence.room.Room;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +27,9 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ShiFuMissage";
     private static SmsManager smsManager;
+    private static final String DATABASE_NAME = "messages_db";
+    private MessageDatabase messageDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         smsManager = SmsManager.getDefault();
+
+        messageDatabase = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class, DATABASE_NAME)
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
     private void smsButtonClicked() {
